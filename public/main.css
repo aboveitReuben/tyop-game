@@ -1,0 +1,23 @@
+body {
+    background-color: black;
+    color: white;
+    font-family: 'Roboto', sans-serif;
+    text-align: center;
+}
+.header {
+    
+}
+.main .word-wrapper .word {
+    display: inline-block;
+    font-size: 36px;
+    padding: 20px;
+    margin: 20px;
+
+}
+.correct {
+    color: red;
+}
+.main .btn-stop {
+    display: block;
+    margin: 20px auto;
+}
