@@ -1,60 +1,37 @@
-const words = [{
-    word: 'referanseinstallasjonsmetode',
-    difficulty: 5
-},{
-    word: 'vanskelig',
-    difficulty: 1
-},{
-    word: 'venninnen',
-    difficulty: 2
-}, {
-    word: 'proposjonalitetskonstanten',
-    difficulty: 4
-},
-{
-    word: 'byråkrat',
-    difficulty: 2
-},
-{
-    word: 'middag',
-    difficulty: 2
-},
-{
-    word: 'gris',
-    difficulty: 1
-},
-{
-    word: 'fiskesuppe',
-    difficulty: 2
-}];
-
-let timerInterval;
-
+//words and char vars
+let words;
 let chosenWord;
 let chosenWordLength;
 let currentChosenWordId = 0;
-
-//btn
-const btnStop = document.getElementById('btnStop');
-btnStop.addEventListener('click', () => {
-    if(btnStop.innerHTML === 'STOP'){
-        stopTimer();
-        btnStop.innerHTML = 'START';
-    }else if(btnStop.innerHTML === 'START'){
-        startTimer();
-        btnStop.innerHTML = 'STOP';
-    }
-})
-
-//timer
-const timerElement = document.getElementById('timer');
-
+//timer vars
+let timerInterval;
 let min = 0;
 let sec = 0;
 let ms = 000;
 let stoptime = true;
 
+//dom elements
+const timerElement = document.getElementById('timer');
+const results = document.getElementById('results');
+let currentChar;
 
+//events
+document.addEventListener('keydown', (e) => {
+    if(e.key === 'Enter'){
+        if(stoptime === true){
+            start();
+        }
+        return;
+    }
+    currentChar = document.getElementById(`char${currentChosenWordId}`);
+
+    if(e.key.toLocaleLowerCase() === currentChar.innerText.toLocaleLowerCase()){
+        currentChosenWordId++;
+        currentChar.classList.add('correct');
+    }
+});
+
+//timer functions
 const startTimer = () => {
     if (stoptime === true) {
         stoptime = false;
@@ -69,20 +46,7 @@ const stopTimer = () => {
         }
     }
 }
-const appendResult = () => {
-    const results = document.getElementById('results');
-    results.innerHTML = `${results.innerHTML}<p><span>ord: ${chosenWord.word}<span> Din tid: <span> ${parseInt(min)} Minutter : ${parseInt(sec)} sekunder: ${parseInt(ms)} millisekunder</span></p>`
-}
-const resetWord = () => {
-    stopTimer();
-    appendResult();
-    chosenWord = undefined;
-    chosenWordLength = undefined;
-    currentChosenWordId = 0;
-    resetTime();
-    start();
 
-}
 const resetTime = () => {
     min = 0;
     sec = 0;
@@ -91,7 +55,7 @@ const resetTime = () => {
 }
 const timerCycle = () => {
     if(chosenWordLength === currentChosenWordId){
-        resetWord()
+        completedWord();
     }
     if(stoptime){
         return;
@@ -127,21 +91,38 @@ const timerCycle = () => {
 
     timerInterval = setTimeout("timerCycle()", 100);
 }
-//events
-document.addEventListener('keydown', (e) => {
-    if(e.key === 'Enter'){
-        if(stoptime === true){
-            start();
-        }
-        return;
-    }
-    const currentChar = document.getElementById(`char${currentChosenWordId}`);
 
-    if(e.key.toLocaleLowerCase() === currentChar.innerText.toLocaleLowerCase()){
-        currentChosenWordId++;
-        currentChar.classList.add('correct')
+const appendResult = () => {
+    
+    results.innerHTML = `${results.innerHTML}<p><span>ord: ${chosenWord.word}<span> Din tid: <span> ${parseInt(min)} Minutter : ${parseInt(sec)} sekunder: ${parseInt(ms)} millisekunder</span></p>`
+}
+
+const completeGame = () => {
+    stopTimer();
+} 
+
+const completedWord = () => {
+    const newWordsList = words.filter(x => x.word !== chosenWord.word)
+    if(!newWordsList.length){
+        completeGame();
+    }else {
+        setWords(newWordsList);
+        resetWord();
     }
-})
+}
+
+const resetWord = () => {
+    stopTimer();
+    appendResult();
+    chosenWord = undefined;
+    chosenWordLength = undefined;
+    currentChosenWordId = 0;
+    resetTime();
+    start();
+
+}
+
+
 
 const getRandomNumber = () => (Math.random() > .5) ? 1 : -1
 
@@ -160,5 +141,43 @@ const start = () => {
     setNewWord();
     startTimer();
 }
+//setup
+const setWords = (wordsArray) => {
+    words = [...wordsArray]
+}
+const init = () => {
+    setWords([
+    {
+        word: 'referanseinstallasjonsmetode',
+        difficulty: 5
+    },{
+        word: 'vanskelig',
+        difficulty: 1
+    },{
+        word: 'venninnen',
+        difficulty: 2
+    }, {
+        word: 'proposjonalitetskonstanten',
+        difficulty: 4
+    },
+    {
+        word: 'byråkrat',
+        difficulty: 2
+    },
+    {
+        word: 'middag',
+        difficulty: 2
+    },
+    {
+        word: 'gris',
+        difficulty: 1
+    },
+    {
+        word: 'fiskesuppe',
+        difficulty: 2
+    }]);
+}
 
-console.log(pickWord())
+//init game
+
+init();
