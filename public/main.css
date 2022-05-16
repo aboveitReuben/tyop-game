@@ -4,9 +4,7 @@ body {
     font-family: 'Roboto', sans-serif;
     text-align: center;
 }
-.header {
-    
-}
+
 .main .word-wrapper .word {
     display: inline-block;
     font-size: 36px;
